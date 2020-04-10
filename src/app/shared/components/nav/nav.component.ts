@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as CoreSelectors from '../../../core/selectors/core.selectors';
+import * as CoreActions from '../../../core/actions/core.actions';
 
 @Component({
   selector: 'app-nav',
@@ -16,5 +17,9 @@ export class NavComponent implements OnInit {
     this.store
       .select(CoreSelectors.selectIsAuthenticated)
       .subscribe((isAuthenticated) => (this.isAuthenticated = isAuthenticated));
+  }
+
+  logout(): void {
+    this.store.dispatch(CoreActions.resetTokens());
   }
 }
