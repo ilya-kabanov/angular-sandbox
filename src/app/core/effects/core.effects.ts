@@ -1,28 +1,49 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, Effect } from '@ngrx/effects';
 
-import { concatMap } from 'rxjs/operators';
+import { concatMap, mergeMap, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 import * as CoreActions from '../actions/core.actions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class CoreEffects {
-  setTokens$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(CoreActions.setTokens),
-      /** An EMPTY observable only emits completion. Replace with your own observable API request */
-      concatMap(() => EMPTY)
-    );
-  });
+  setTokens$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(CoreActions.setTokens),
+        // todo: save to local sttorage
+        tap((res) => {})
+      );
+    },
+    { dispatch: false }
+  );
 
-  resetTokens$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(CoreActions.resetTokens),
-      // todo: delete tokens from storage
-      concatMap(() => EMPTY)
-    );
-  });
+  resetTokens$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(CoreActions.resetTokens),
+        tap((res) => {
+          // todo: delete tokens from storage
+          this.router.navigate(['/auth/login']);
+        })
+      );
+    },
+    { dispatch: false }
+  );
 
-  constructor(private actions$: Actions) {}
+  authRequired$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(CoreActions.authRequired),
+        tap(() => {
+          this.router.navigate(['/auth/login']);
+        })
+      );
+    },
+    { dispatch: false }
+  );
+
+  constructor(private actions$: Actions, private router: Router) {}
 }

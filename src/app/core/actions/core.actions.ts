@@ -6,3 +6,8 @@ export const setTokens = createAction(
 );
 
 export const resetTokens = createAction('[Core] Reset Tokens');
+
+export const authRequired = createAction(
+  '[Core] Auth Required',
+  props<{ url: string }>()
+);

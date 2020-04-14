@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as CoreActions from '../../../core/actions/core.actions';
+import * as AuthActions from '../../actions/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     this.store.dispatch(
-      CoreActions.setTokens({ access: 'access123', refresh: 'refresh123' })
+      AuthActions.login({ email: 'abc@example.com', password: 'password' })
     );
   }
 }
