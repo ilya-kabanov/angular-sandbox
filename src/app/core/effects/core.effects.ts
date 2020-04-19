@@ -1,20 +1,43 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType, Effect } from '@ngrx/effects';
 
-import { concatMap, mergeMap, tap } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { EMPTY, defer, of, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 import * as CoreActions from '../actions/core.actions';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class CoreEffects {
+  readonly accessTokenKey: string = 'access-token';
+  readonly refreshTokenKey: string = 'refresh-token';
+
+  @Effect()
+  init$ = defer(
+    (): Observable<Action> => {
+      let accessToken = localStorage.getItem(this.accessTokenKey);
+      let refreshToken = localStorage.getItem(this.refreshTokenKey);
+
+      return accessToken && refreshToken
+        ? of(
+            CoreActions.setTokens({
+              access: accessToken,
+              refresh: refreshToken,
+            })
+          )
+        : EMPTY;
+    }
+  );
+
   setTokens$ = createEffect(
     () => {
       return this.actions$.pipe(
         ofType(CoreActions.setTokens),
-        // todo: save to local sttorage
-        tap((res) => {})
+        tap((res) => {
+          localStorage.setItem(this.accessTokenKey, res.access);
+          localStorage.setItem(this.refreshTokenKey, res.refresh);
+        })
       );
     },
     { dispatch: false }
@@ -24,8 +47,9 @@ export class CoreEffects {
     () => {
       return this.actions$.pipe(
         ofType(CoreActions.resetTokens),
-        tap((res) => {
-          // todo: delete tokens from storage
+        tap(() => {
+          localStorage.removeItem(this.accessTokenKey);
+          localStorage.removeItem(this.refreshTokenKey);
           this.router.navigate(['/auth/login']);
         })
       );
