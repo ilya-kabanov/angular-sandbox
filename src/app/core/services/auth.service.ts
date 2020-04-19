@@ -9,6 +9,6 @@ export class AuthService {
   constructor() {}
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return of(new LoginResponse());
+    return of(<LoginResponse>{ accessToken: 'auth0', refreshToken: 'refr0' });
   }
 }
