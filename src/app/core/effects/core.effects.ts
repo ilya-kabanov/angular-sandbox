@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Action } from '@ngrx/store';
 import { Actions, createEffect, ofType, Effect } from '@ngrx/effects';
 
-import { EMPTY, defer, of, Observable } from 'rxjs';
+import { EMPTY, defer, of, Observable, asyncScheduler } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import * as CoreActions from '../actions/core.actions';
@@ -19,14 +19,18 @@ export class CoreEffects {
       let accessToken = localStorage.getItem(this.accessTokenKey);
       let refreshToken = localStorage.getItem(this.refreshTokenKey);
 
-      return accessToken && refreshToken
-        ? of(
-            CoreActions.setTokens({
-              access: accessToken,
-              refresh: refreshToken,
-            })
-          )
-        : EMPTY;
+      // todo: add more checks
+      if (accessToken && refreshToken) {
+        return of(
+          CoreActions.setTokens({
+            access: accessToken,
+            refresh: refreshToken,
+          }),
+          asyncScheduler
+        );
+      } else {
+        return of(CoreActions.resetTokens(), asyncScheduler);
+      }
     }
   );
 
