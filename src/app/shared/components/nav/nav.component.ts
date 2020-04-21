@@ -10,6 +10,7 @@ import * as CoreActions from '../../../core/actions/core.actions';
 })
 export class NavComponent implements OnInit {
   isAuthenticated: boolean;
+  isCollapsed: boolean = true;
 
   constructor(private store: Store) {}
 
