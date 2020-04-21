@@ -29,7 +29,6 @@ export class AuthGuard implements CanActivate {
       select(CoreSelectors.selectIsAuthenticated),
       map((isAuthenticated) => {
         if (!isAuthenticated) {
-          console.debug(state, next);
           this.store.dispatch(CoreActions.authRequired({ url: state.url }));
           return false;
         }
