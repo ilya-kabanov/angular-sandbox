@@ -6,6 +6,8 @@ import * as fromCore from './reducers/core.reducer';
 import { CoreEffects } from './effects/core.effects';
 import { AuthService } from './services/auth.service';
 import { UrlInterceptor } from './interceptors/url.interceptor';
+import { environment } from 'src/environments/environment';
+import { MockModule } from './mock/mock.module';
 
 @NgModule({
   declarations: [],
@@ -13,6 +15,7 @@ import { UrlInterceptor } from './interceptors/url.interceptor';
     HttpClientModule,
     StoreModule.forFeature(fromCore.coreFeatureKey, fromCore.reducer),
     EffectsModule.forFeature([CoreEffects]),
+    environment.mockApi ? [MockModule] : [],
   ],
   providers: [
     AuthService,
