@@ -34,15 +34,16 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
-    if (!this.loginForm.valid) {
-      return;
+    if (this.loginForm.valid) {
+      this.store.dispatch(
+        AuthActions.login({
+          email: this.email.value,
+          password: this.password.value,
+        })
+      );
+    } else {
+      this.email.markAsDirty();
+      this.password.markAsDirty();
     }
-
-    this.store.dispatch(
-      AuthActions.login({
-        email: this.email.value,
-        password: this.password.value,
-      })
-    );
   }
 }
